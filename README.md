@@ -1,11 +1,11 @@
- #### One step to install naiveproxy
+ #### 1. One step to install naiveproxy
  
  ```
  wget https://raw.githubusercontent.com/zhoule/naiveproxy-installer/main/install_script.sh && chmod +x install_script.sh && ./install_script.sh
 
 ```
 
-###@ 2. caddy常用指令：
+#### 2. caddy常用指令：
 
 前台运行caddy：./caddy run
 
