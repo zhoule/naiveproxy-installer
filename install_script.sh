@@ -5,10 +5,10 @@ apt update -y
 apt install -y curl wget
 
 # 下载Go安装包
-wget https://go.dev/dl/go1.19.3.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
 
 # 解压Go安装包
-tar -C /usr/local -xzf go1.19.3.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
 
 # 将Go路径添加到.profile文件中
 echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile
