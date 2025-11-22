@@ -304,6 +304,26 @@ DOMAIN=$DOMAIN
 EMAIL=$EMAIL
 EOF
 
+    # 创建 docker-compose.yml
+    echo -e "${YELLOW}创建 docker-compose.yml 配置...${NC}"
+    cat > docker-compose.yml << 'EOF'
+version: '3.8'
+
+services:
+  caddy2:
+    image: ericwang2006/caddy2
+    container_name: caddy2
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/caddy_data:/data
+      - ./caddy/caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-example.com}
+      - EMAIL=${EMAIL:-admin@example.com}
+EOF
+
     # 更新 Caddyfile
     echo -e "${YELLOW}生成 Caddyfile 配置...${NC}"
     cat > caddy/Caddyfile << EOF
@@ -323,6 +343,33 @@ route {
     header_up X-Forwarded-Host {host}
   }
 }
+EOF
+
+    # 创建 .gitignore
+    echo -e "${YELLOW}创建 .gitignore 文件...${NC}"
+    cat > .gitignore << 'EOF'
+# 环境变量文件（包含敏感信息）
+.env
+
+# Caddy 运行时数据
+caddy/caddy_data/
+caddy/caddy_config/
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.iml
 EOF
 
     echo
