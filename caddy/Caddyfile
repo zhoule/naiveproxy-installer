@@ -1,0 +1,16 @@
+:443, example.com
+tls your-email@example.com
+
+route {
+  forward_proxy {
+    basic_auth user password
+    hide_ip
+    hide_via
+    probe_resistance
+  }
+
+  reverse_proxy https://demo.cloudreve.org {
+    header_up Host {upstream_hostport}
+    header_up X-Forwarded-Host {host}
+  }
+}

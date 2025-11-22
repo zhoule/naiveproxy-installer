@@ -1,0 +1,22 @@
+# 环境变量文件（包含敏感信息）
+.env
+
+# Caddy 运行时数据
+caddy/caddy_data/
+caddy/caddy_config/
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.iml
