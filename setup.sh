@@ -329,8 +329,7 @@ services:
       - ./caddy/caddy_data:/data
       - ./caddy/caddy_config:/config
     environment:
-      - DOMAIN=${DOMAIN:-example.com}
-      - EMAIL=${EMAIL:-admin@example.com}
+      - PATH=/etc/naiveproxy/Caddyfile
 EOF
 
     # 更新 Caddyfile
