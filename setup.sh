@@ -263,6 +263,12 @@ main() {
     echo -e "${YELLOW}创建必要的目录...${NC}"
     mkdir -p caddy/caddy_data caddy/caddy_config
 
+    # 确保 Caddyfile 不是目录
+    if [ -d "caddy/Caddyfile" ]; then
+        echo -e "${YELLOW}检测到 caddy/Caddyfile 是目录，正在删除...${NC}"
+        rm -rf caddy/Caddyfile
+    fi
+
     # 获取用户配置
     echo
     echo -e "${YELLOW}请输入配置信息:${NC}"
