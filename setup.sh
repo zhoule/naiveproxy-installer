@@ -325,7 +325,7 @@ services:
     restart: always
     network_mode: "host"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/Caddyfile:/etc/naiveproxy/Caddyfile
       - ./caddy/caddy_data:/data
       - ./caddy/caddy_config:/config
     environment:
