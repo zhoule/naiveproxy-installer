@@ -5,17 +5,22 @@
 ## 特性
 
 - ✅ 一键安装部署，无需手动编译
+- ✅ 自动检测并安装 Docker 和 Docker Compose
+- ✅ 支持多种 Linux 发行版（Ubuntu/Debian/CentOS/RHEL等）
 - ✅ 基于 Docker，环境隔离，易于管理
 - ✅ 自动申请和续期 SSL 证书
 - ✅ 支持流量伪装（反向代理）
 - ✅ 完整的代理功能（hide_ip, hide_via, probe_resistance）
+- ✅ 自动检查端口占用和环境配置
 
 ## 环境要求
 
-- Linux 系统
-- 已安装 Docker 和 Docker Compose
+- Linux 系统（支持 Ubuntu/Debian/CentOS/RHEL/Rocky/AlmaLinux）
+- Root 权限或 sudo 权限
 - 一个已解析到服务器的域名
 - 开放 443 端口
+
+**注意：** 安装脚本会自动检测并安装 Docker 和 Docker Compose，无需手动安装
 
 ## 快速开始
 
@@ -25,11 +30,13 @@
 wget https://raw.githubusercontent.com/zhoule/naiveproxy-installer/main/setup.sh && chmod +x setup.sh && ./setup.sh
 ```
 
-安装脚本会引导您完成以下配置：
-- 域名设置
-- 邮箱设置（用于 SSL 证书）
-- 代理用户名和密码
-- 反向代理目标地址
+安装脚本会自动完成：
+- ✅ 检测操作系统类型
+- ✅ 检测并安装 Docker（如果未安装）
+- ✅ 检测并安装 Docker Compose（如果未安装）
+- ✅ 检查端口占用情况
+- ✅ 引导配置域名、邮箱、代理账户等信息
+- ✅ 自动生成配置文件并启动服务
 
 ### 方法二：手动配置
 
@@ -66,6 +73,37 @@ mkdir -p caddy/caddy_data caddy/caddy_config
 docker-compose up -d
 ```
 
+## 依赖自动安装
+
+setup.sh 脚本会自动检测并安装所需依赖：
+
+### 支持的操作系统
+
+- Ubuntu 18.04+
+- Debian 10+
+- CentOS 7+
+- RHEL 7+
+- Rocky Linux 8+
+- AlmaLinux 8+
+
+### 自动安装的组件
+
+1. **Docker** - 如果未安装，脚本会询问是否自动安装
+2. **Docker Compose** - 自动安装最新版本
+3. **基础工具** - curl, wget 等必要工具
+
+### 手动安装 Docker（可选）
+
+如果您希望手动安装 Docker：
+
+```bash
+# Ubuntu/Debian
+curl -fsSL https://get.docker.com | sh
+
+# CentOS/RHEL
+curl -fsSL https://get.docker.com | sh
+```
+
 ## 域名解析
 
 在启动服务之前，请确保您的域名已正确解析到服务器IP地址：
@@ -74,6 +112,11 @@ docker-compose up -d
 类型: A
 主机记录: @ 或 www
 记录值: 您的服务器IP
+```
+
+您可以使用以下命令查看服务器公网IP：
+```bash
+curl ifconfig.me
 ```
 
 ## Docker Compose 常用命令
@@ -133,29 +176,78 @@ Caddy 的配置文件，包含：
 
 ## 故障排查
 
-### 1. 查看容器日志
+### 1. Docker 安装失败
+
+如果自动安装 Docker 失败，请手动安装：
+
+```bash
+# 使用官方脚本
+curl -fsSL https://get.docker.com | sh
+
+# 或访问官方文档
+# https://docs.docker.com/engine/install/
+```
+
+### 2. 端口 443 被占用
+
+检查占用 443 端口的进程：
+
+```bash
+# 使用 netstat
+netstat -tlnp | grep 443
+
+# 或使用 ss
+ss -tlnp | grep 443
+
+# 或使用 lsof
+lsof -i:443
+```
+
+停止占用端口的服务后再运行安装脚本。
+
+### 3. 查看容器日志
 
 ```bash
 docker-compose logs -f caddy2
 ```
 
-### 2. 检查容器状态
+### 4. 检查容器状态
 
 ```bash
 docker-compose ps
 ```
 
-### 3. 检查端口是否监听
+### 5. 检查域名解析
 
 ```bash
-netstat -tlnp | grep 443
+# 检查域名是否解析到正确的IP
+nslookup your-domain.com
+
+# 或使用 dig
+dig your-domain.com
 ```
 
-### 4. 测试证书申请
+### 6. 测试证书申请
 
 确保域名已正确解析，并且 80、443 端口可访问。
 
-### 5. 重新生成配置
+### 7. 防火墙配置
+
+确保防火墙开放了 443 端口：
+
+```bash
+# Ubuntu/Debian (ufw)
+ufw allow 443/tcp
+
+# CentOS/RHEL (firewalld)
+firewall-cmd --permanent --add-port=443/tcp
+firewall-cmd --reload
+
+# iptables
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+```
+
+### 8. 重新生成配置
 
 ```bash
 docker-compose down
