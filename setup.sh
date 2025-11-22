@@ -268,19 +268,22 @@ main() {
     echo -e "${YELLOW}请输入配置信息:${NC}"
     echo
 
-    read -p "请输入您的域名 (例如: example.com): " DOMAIN
+    read -p "请输入您的域名 [jzhou.fun]: " DOMAIN
+    DOMAIN=${DOMAIN:-jzhou.fun}
     while [ -z "$DOMAIN" ]; do
         echo -e "${RED}域名不能为空${NC}"
         read -p "请输入您的域名: " DOMAIN
     done
 
-    read -p "请输入您的邮箱 (用于 SSL 证书): " EMAIL
+    read -p "请输入您的邮箱 (用于 SSL 证书) [jack.zxzhou@gmail.com]: " EMAIL
+    EMAIL=${EMAIL:-jack.zxzhou@gmail.com}
     while [ -z "$EMAIL" ]; do
         echo -e "${RED}邮箱不能为空${NC}"
         read -p "请输入您的邮箱: " EMAIL
     done
 
-    read -p "请输入代理用户名: " USERNAME
+    read -p "请输入代理用户名 [zhoule]: " USERNAME
+    USERNAME=${USERNAME:-zhoule}
     while [ -z "$USERNAME" ]; do
         echo -e "${RED}用户名不能为空${NC}"
         read -p "请输入代理用户名: " USERNAME
@@ -294,7 +297,7 @@ main() {
         echo
     done
 
-    read -p "请输入反向代理目标 (默认: https://demo.cloudreve.org): " REVERSE_PROXY
+    read -p "请输入反向代理目标 [https://demo.cloudreve.org]: " REVERSE_PROXY
     REVERSE_PROXY=${REVERSE_PROXY:-https://demo.cloudreve.org}
 
     # 创建 .env 文件
@@ -384,6 +387,13 @@ EOF
 
     if [[ $START_NOW =~ ^[Yy]$ ]]; then
         echo -e "${YELLOW}启动服务...${NC}"
+
+        # 检查 docker-compose.yml 是否存在
+        if [ ! -f "docker-compose.yml" ]; then
+            echo -e "${RED}错误: docker-compose.yml 文件不存在${NC}"
+            echo -e "${YELLOW}当前目录: $(pwd)${NC}"
+            exit 1
+        fi
 
         # 尝试使用 docker compose 或 docker-compose
         if docker compose version &> /dev/null; then
