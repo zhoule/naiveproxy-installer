@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   caddy2:
-    image: ericwang2006/caddy2
+    image: pocat/naiveproxy:latest
     container_name: caddy2
     restart: always
     network_mode: "host"

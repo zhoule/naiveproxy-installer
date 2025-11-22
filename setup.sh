@@ -314,7 +314,7 @@ version: '3.8'
 
 services:
   caddy2:
-    image: ericwang2006/caddy2
+    image: pocat/naiveproxy:latest
     container_name: caddy2
     restart: always
     network_mode: "host"
@@ -395,7 +395,7 @@ EOF
             exit 1
         fi
 
-        # 尝试使用 docker compose 或 docker-compose
+        # 启动服务
         if docker compose version &> /dev/null; then
             docker compose up -d
         else
